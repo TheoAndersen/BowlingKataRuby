@@ -6,9 +6,9 @@ class Game
 
   def throw(pins)
     if @score.nil?
-      @score = Score.new(pins)
+      @score = pins
     else
-      @score.add(Score.new(pins))
+      @score.add(pins)
     end
   end
 
@@ -17,7 +17,7 @@ class Game
   end
 end
 
-class Score
+class Pins
   protected
   attr_reader :pins
 
@@ -26,12 +26,12 @@ class Score
     @pins = pins
   end
 
-  def ==(otherScore)
-    @pins == otherScore.pins
+  def ==(otherPins)
+    @pins == otherPins.pins
   end
 
-  def add(otherScore)
-    @pins += otherScore.pins
+  def add(otherPins)
+    @pins += otherPins.pins
   end
 end
 
@@ -39,14 +39,14 @@ class BowlingTest < Test::Unit::TestCase
   def test_aGameOfOnly1s
     game = Game.new()
     20.times do
-      game.throw(1)
+      game.throw(Pins.new(1))
     end
-    assert_equal(Score.new(20), game.score)
+    assert_equal(Pins.new(20), game.score)
   end
   
   def test_canThrowAPin
     game = Game.new()
-    game.throw(1)
-    assert_equal(Score.new(1), game.score)
+    game.throw(Pins.new(1))
+    assert_equal(Pins.new(1), game.score)
   end
 end
