@@ -1,47 +1,5 @@
 require "test/unit"
 
-class Game
-  def initialize()
-    @frames = []
-    @currentFrame = Frame.new()
-  end
-
-  def throw(pins)
-    if @currentFrame.throwOne.nil?
-      @currentFrame.throwOne = pins
-      @frames.push(@currentFrame)
-
-      if pins.isStrike()
-        @currentFrame = Frame.new()
-      end
-    else
-      @currentFrame.throwTwo = pins
-      @currentFrame = Frame.new()
-    end
-  end
-
-  def score
-    allPins = Pins.new(0)
-
-    if @frames.length == 0
-      return allPins
-    end
-
-    for i in 0..@frames.length-1
-      allPins.add(Pins.new(@frames[i].total))
-
-      if i > 0 && @frames[i-1].total == 10
-        if @frames[i-1].throwOne.isStrike()
-          allPins.add(Pins.new(@frames[i].total))
-        else
-          allPins.add(@frames[i].throwOne)
-        end
-      end
-    end
-
-    return allPins
-  end
-end
 
 
 class Pins
@@ -86,8 +44,70 @@ class Frame
   end
 end
 
+class Game
+  attr_reader :frames
+  
+  def initialize()
+    @frames = []
+    @currentFrame = Frame.new()
+  end
+
+  def throw(pins)
+    if @currentFrame.throwOne.nil?
+      @currentFrame.throwOne = pins
+      @frames.push(@currentFrame)
+
+      if pins.isStrike()
+        @currentFrame = Frame.new()
+      end
+    else
+      @currentFrame.throwTwo = pins
+      @currentFrame = Frame.new()
+    end
+  end
+
+  def score
+    allPins = Pins.new(0)
+
+    if @frames.length == 0
+      return allPins
+    end
+
+    for i in 0..@frames.length-1
+      if i < 10
+        allPins.add(Pins.new(@frames[i].total))
+      end
+
+      if i > 0 && i < 11 && @frames[i-1].total == 10
+        if @frames[i-1].throwOne.isStrike()
+          allPins.add(Pins.new(@frames[i].total))
+        else
+          allPins.add(@frames[i].throwOne)
+        end
+      end
+
+      if i > 1 &&
+          @frames[i-2].throwOne.isStrike() &&
+          @frames[i-1].throwOne.isStrike()
+        allPins.add(@frames[i].throwOne)
+      end
+    end
+
+    return allPins
+  end
+end
+
+
 class BowlingTest < Test::Unit::TestCase
 
+  def test_APerfectGame
+    game = Game.new()
+    12.times do
+      game.throw(Pins.new(10))
+    end
+    assert_equal(Pins.new(300), game.score, "a perfect game should give another strike")
+  end
+  
   def test_AStrike
     game = Game.new()
     game.throw(Pins.new(10))
