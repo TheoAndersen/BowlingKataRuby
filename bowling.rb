@@ -100,6 +100,42 @@ end
 
 class BowlingTest < Test::Unit::TestCase
 
+  def test_ANormalNonLinearGame
+    game = Game.new()
+    
+    game.throw(Pins.new(1))
+    game.throw(Pins.new(4))
+    
+    game.throw(Pins.new(4))
+    game.throw(Pins.new(5))
+    
+    game.throw(Pins.new(6))
+    game.throw(Pins.new(4))
+    
+    game.throw(Pins.new(5))
+    game.throw(Pins.new(5))
+    
+    game.throw(Pins.new(10))
+    
+    game.throw(Pins.new(0))
+    game.throw(Pins.new(1))
+    
+    game.throw(Pins.new(7))
+    game.throw(Pins.new(3))
+    
+    game.throw(Pins.new(6))
+    game.throw(Pins.new(4))
+    
+    game.throw(Pins.new(10))
+    
+    game.throw(Pins.new(2))
+    game.throw(Pins.new(8))
+
+    game.throw(Pins.new(6))
+
+    assert_equal(Pins.new(133), game.score)
+  end
+  
   def test_APerfectGame
     game = Game.new()
     12.times do
