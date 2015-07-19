@@ -1,10 +1,10 @@
 require "test/unit"
 
-
-
 class Pins
+  protected
   attr_reader :pins
 
+  public
   def initialize(pins)
     @pins = pins
   end
@@ -18,7 +18,7 @@ class Pins
   end
 
   def isStrike()
-    return pins == 10
+    return @pins == 10
   end
 end
 
@@ -26,18 +26,18 @@ class Frame
   attr_accessor :throwOne, :throwTwo
 
   def total()
-    totalValue = 0
+    totalValue = Pins.new(0)
     
     if @throwOne.nil? && @throwTwo.nil?
-      return 0
+      return Pins.new(0)
     end
 
     if @throwOne.nil? == false
-      totalValue += @throwOne.pins
+      totalValue.add(@throwOne)
     end
 
     if @throwTwo.nil? == false
-      totalValue += @throwTwo.pins
+      totalValue.add(@throwTwo)
     end
     
     return totalValue
@@ -75,12 +75,12 @@ class Game
 
     for i in 0..@frames.length-1
       if i < 10
-        allPins.add(Pins.new(@frames[i].total))
+        allPins.add(@frames[i].total)
       end
 
-      if i > 0 && i < 11 && @frames[i-1].total == 10
+      if i > 0 && i < 11 && @frames[i-1].total == Pins.new(10)
         if @frames[i-1].throwOne.isStrike()
-          allPins.add(Pins.new(@frames[i].total))
+          allPins.add(@frames[i].total)
         else
           allPins.add(@frames[i].throwOne)
         end
@@ -175,10 +175,10 @@ class BowlingTest < Test::Unit::TestCase
   end                                                                                    
 
   def test_frameCanCalculateTotalScore
-    assert_equal(0, newFrame(nil, nil).total)
-    assert_equal(1, newFrame(Pins.new(1), nil).total)
-    assert_equal(1, newFrame(nil, Pins.new(1)).total)
-    assert_equal(2, newFrame(Pins.new(1), Pins.new(1)).total)
+    assert_equal(Pins.new(0), newFrame(nil, nil).total)
+    assert_equal(Pins.new(1), newFrame(Pins.new(1), nil).total)
+    assert_equal(Pins.new(1), newFrame(nil, Pins.new(1)).total)
+    assert_equal(Pins.new(2), newFrame(Pins.new(1), Pins.new(1)).total)
   end
 
   def newFrame(throwOne, throwTwo)
